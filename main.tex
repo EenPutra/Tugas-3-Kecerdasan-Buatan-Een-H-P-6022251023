@@ -1,0 +1,256 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{datetime2}
+\usepackage{xparse}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{newunicodechar}
+\usepackage{float}
+\newunicodechar{μ}{\textmu}
+
+
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
+
+ 
+ \usepackage{graphicx}
+ \usepackage{titling}
+
+ \title{Assignment 2: Fuzzy Logic Function\\ Perancangan Fuzzy Inference System (FIS) untuk Penentuan Harga Paket PV
+}
+% \author{Muhammad Qomaruz Zaman}
+\date{11 March 2025}
+ 
+ \usepackage{fancyhdr}
+\fancypagestyle{plain}{%  the preset of fancyhdr 
+    \fancyhf{} % clear all header and footer fields
+    \fancyfoot[R]{}
+    \fancyfoot[L]{}
+    \fancyhead[L]{\includegraphics[width=2cm]{ITS_pojok.pdf}}
+    \fancyhead[R]{ \DTMnow}
+}
+\makeatletter
+\def\@maketitle{%
+  \newpage
+  \null
+  \vskip 1em%
+  \begin{center}%
+  \let \footnote \thanks
+    {\LARGE \@title \par}%
+    \vskip 1em%
+    %{\large \@date}%
+  \end{center}%
+  \par
+  \vskip 1em}
+\makeatother
+
+\usepackage{lipsum}  
+% \usepackage{cmbright} % Change the font by zee
+
+\begin{document}
+
+\maketitle
+
+
+\noindent\begin{tabular}{@{}ll}
+    Student: & Een Hutama Putra\\
+    NRP: & 6022251023\\
+     Teacher: &  Muhammad Qomaruz Zaman, S.T., M.T., Ph.D.\\
+     Class name: & Artificial Intelegent class (X)\\
+     %YouTube video link: & \url{https://youtu.be/XnGeqjbIusw?si=C58i2F8sJz37gfQx} \\
+     GitHub link: & \url{https://github.com/EenPutra/Tugas-3-Kecerdasan-Buatan-Een-H-P-6022251023?tab=readme-ov-file#tugas-3-kecerdasan-buatan-een-h-p-6022251023}\\
+     Overleaf link: & \url{https://www.overleaf.com/project/69b1915153ebb58472f45fca}\\
+\end{tabular}
+\vspace{0,5cm}
+
+
+\section{Pendahuluan}
+Dokumen ini menjelaskan perancangan \textit{Fuzzy Inference System (FIS)} menggunakan model Sugeno orde-0 untuk menentukan harga paket sistem Photovoltaic (PV).
+\begin{itemize}
+    \item Luasan area PV
+    \item Daya yang dihasilkan
+\end{itemize}
+
+\section{Struktur Sistem}
+\begin{itemize}
+    \item Tipe FIS: Sugeno orde-0
+    \item Metode inferensi: AND (perkalian)
+    \item Output: Singleton (konstanta)
+    \item Defuzzifikasi: Weighted Average
+\end{itemize}
+
+\section{Variabel Input}
+
+\subsection{Luasan Area PV (\texorpdfstring{$A$}{A})}
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Linguistik & Tipe MF & Parameter \\
+\hline
+Sedikit & Trapesium & (0, 0, 200, 400) \\
+Sedang & Segitiga & (300, 500, 700) \\
+Banyak & Trapesium & (600, 800, 1000, 1000) \\
+\hline
+\end{tabular}
+\end{center}
+
+Rentang: 0 -- 1000 m$^2$
+\vspace{0,5cm}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Area PV.png}
+    \caption{Membership fuzzy logic Area PV.}
+    \label{fig:enter-label}
+\end{figure}
+
+\subsection{Daya PV ($P$)}
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Linguistik & Tipe MF & Parameter \\
+\hline
+Kecil & Trapesium & (0, 0, 100, 200) \\
+Menengah & Segitiga & (150, 250, 350) \\
+Besar & Trapesium & (300, 400, 500, 500) \\
+\hline
+\end{tabular}
+\end{center}
+
+Rentang: 0 -- 500 kW
+\vspace{0,5cm}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Daya PV.png}
+    \caption{Membership fuzzy logic Daya PV.}
+    \label{fig:enter-label}
+\end{figure}
+\section{Variabel Output}
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Paket & Tipe Output & Nilai Singleton \\
+\hline
+Basic & Konstanta & 1 \\
+Premium & Konstanta & 2 \\
+Platinum & Konstanta & 3 \\
+\hline
+\end{tabular}
+\end{center}
+\vspace{0,5cm}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Output.png}
+    \caption{Output.}
+    \label{fig:enter-label}
+\end{figure}
+\section{Aturan Fuzzy (Rule Base)}
+\begin{enumerate}
+    \item IF Area sedikit AND Daya kecil THEN Basic
+    \item IF Area sedikit AND Daya menengah THEN Basic
+    \item IF Area sedikit AND Daya besar THEN Premium
+    \item IF Area sedang AND Daya kecil THEN Basic
+    \item IF Area sedang AND Daya menengah THEN Premium
+    \item IF Area sedang AND Daya besar THEN Platinum
+    \item IF Area banyak AND Daya kecil THEN Premium
+    \item IF Area banyak AND Daya menengah THEN Platinum
+    \item IF Area banyak AND Daya besar THEN Platinum
+\end{enumerate}
+\vspace{0,5cm}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+No & Area & Daya & Output \\
+\hline
+1 & Sedikit & Kecil & Basic \\
+2 & Sedikit & Menengah & Basic \\
+3 & Sedikit & Besar & Premium \\
+4 & Sedang & Kecil & Basic \\
+5 & Sedang & Menengah & Premium \\
+6 & Sedang & Besar & Platinum \\
+7 & Banyak & Kecil & Premium \\
+8 & Banyak & Menengah & Platinum \\
+9 & Banyak & Besar & Platinum \\
+\hline
+\end{tabular}
+\end{center}
+
+\section{Inferensi Sugeno}
+
+\begin{equation}
+w_i = \mu_{Area}(A) \times \mu_{Daya}(P)
+\end{equation}
+
+\begin{equation}
+z_i = \text{konstanta (1, 2, atau 3)}
+\end{equation}
+
+\section{Defuzzifikasi}
+
+\begin{equation}
+z = \frac{\sum_{i=1}^{n} w_i z_i}{\sum_{i=1}^{n} w_i}
+\end{equation}
+
+\section{Contoh Perhitungan}
+
+Misal:
+\begin{itemize}
+    \item Area = 450 m$^2$
+    \item Daya = 320 kW
+\end{itemize}
+
+Derajat keanggotaan:
+\begin{itemize}
+    \item $\mu_{Sedikit} = 0.2$, $\mu_{Sedang} = 0.7$
+    \item $\mu_{Menengah} = 0.4$, $\mu_{Besar} = 0.6$
+\end{itemize}
+
+Bobot aturan:
+\begin{align*}
+w_1 &= 0.7 \times 0.4 = 0.28 \\
+w_2 &= 0.7 \times 0.6 = 0.42 \\
+w_3 &= 0.2 \times 0.4 = 0.08 \\
+w_4 &= 0.2 \times 0.6 = 0.12
+\end{align*}
+
+Perhitungan output:
+\begin{equation}
+z = \frac{(0.28 \times 2) + (0.42 \times 3) + (0.08 \times 1) + (0.12 \times 2)}{0.28 + 0.42 + 0.08 + 0.12}
+\end{equation}
+
+\begin{equation}
+z = \frac{2.14}{0.9} \approx 2.38
+\end{equation}
+
+\section{Interpretasi Output}
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Nilai $z$ & Paket \\
+\hline
+1.0 -- 1.5 & Basic \\
+1.5 -- 2.5 & Premium \\
+2.5 -- 3.0 & Platinum \\
+\hline
+\end{tabular}
+\end{center}
+
+Hasil menunjukkan bahwa sistem memilih paket \textbf{Premium}.
+
+\section{Kesimpulan}
+FIS Sugeno orde-0 memberikan metode yang sederhana dan efisien untuk menentukan harga paket PV berdasarkan parameter teknis. Model ini dapat dikembangkan lebih lanjut dengan menambahkan variabel input lain seperti irradiance atau biaya investasi.
+
+
+
+
+\end{document}
